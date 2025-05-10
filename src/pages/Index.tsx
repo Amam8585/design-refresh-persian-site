@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { 
@@ -127,7 +126,7 @@ const Index = () => {
         </div>
       </header>
       
-      <main className="pt-16">
+      <main className="pt-16 pb-32">
         {/* Gallery Section */}
         <div className="my-6">
           {item.media && item.media.length > 0 ? (
@@ -182,16 +181,16 @@ const Index = () => {
         </Card>
       </main>
 
-      {/* Bottom Navigation */}
+      {/* Bottom Navigation with more spacing above */}
       <nav className="fixed bottom-0 left-0 right-0 bg-background/80 backdrop-blur-md border-t z-40">
-        <div className="max-w-md mx-auto flex justify-around items-center h-[86px]">
+        <div className="max-w-md mx-auto flex justify-around items-center h-[72px]">
           <NavItem href="https://t.me/Ar_broken" icon={<Headset size={22} />} label="پشتیبانی" />
           <NavItem href="https://arianstore.org/indext.php" icon={<Package size={22} />} label="ثبت اگهی" />
           <NavItem 
             href="https://arianstore.org/bos.html" 
             icon={<ShoppingBag size={28} />} 
             label="" 
-            className="relative -mt-10 bg-gradient-to-r from-[#3fff7c] to-[#3ffbe0] p-5 rounded-full shadow-lg" 
+            className="relative -mt-8 bg-gradient-to-r from-[#3fff7c] to-[#3ffbe0] p-4 rounded-full shadow-lg" 
           />
           <NavItem href="https://arianstore.org" icon={<User size={22} />} label="خانه" />
           <NavItem href="https://arianstore.org/Por.html" icon={<Store size={22} />} label="محصولات" />
