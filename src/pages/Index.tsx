@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { 
@@ -13,14 +14,15 @@ import { toast } from "@/components/ui/use-toast";
 import { 
   Headset, 
   Package, 
-  ShoppingBag, 
   User, 
   Store,
   Tag,
   Globe,
   Check,
   Settings,
-  User as UserIcon
+  User as UserIcon,
+  ShoppingCart,
+  LoaderCircle
 } from "lucide-react";
 
 interface ItemData {
@@ -39,13 +41,19 @@ const Index = () => {
   const [item, setItem] = useState<ItemData | null>(null);
   const [lightboxOpen, setLightboxOpen] = useState<boolean>(false);
   const [selectedImage, setSelectedImage] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(true);
   const location = useLocation();
   
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const code = params.get('code');
     
-    if (!code) return;
+    if (!code) {
+      setLoading(false);
+      return;
+    }
+    
+    setLoading(true);
     
     fetch('acc.json?cb=' + Date.now(), {
       cache: 'no-store'
@@ -56,9 +64,11 @@ const Index = () => {
         if (foundItem) {
           setItem(foundItem);
         }
+        setLoading(false);
       })
       .catch(error => {
         console.error("Error fetching data:", error);
+        setLoading(false);
       });
   }, [location]);
 
@@ -70,8 +80,9 @@ const Index = () => {
       .then(res => {
         if (res.success) {
           toast({
-            title: "موفق",
+            title: "موفق ✓",
             description: "محصول با موفقیت به سبد خرید اضافه شد",
+            className: "bg-gradient-to-r from-green-50 to-green-100 border-green-200 text-green-900",
             duration: 3000,
           });
         } else if (res.error === 'duplicate') {
@@ -97,12 +108,23 @@ const Index = () => {
     setLightboxOpen(true);
   };
 
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-[80vh]">
+        <div className="text-center">
+          <LoaderCircle className="w-12 h-12 mx-auto mb-4 text-primary animate-spin" />
+          <p className="text-muted-foreground">در حال بارگذاری...</p>
+        </div>
+      </div>
+    );
+  }
+
   if (!item) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
         <div className="text-center">
-          <div className="animate-pulse text-4xl mb-4">⏳</div>
-          <p className="text-muted-foreground">در حال بارگذاری...</p>
+          <div className="text-4xl mb-4">🔍</div>
+          <p className="text-muted-foreground">محصولی یافت نشد</p>
         </div>
       </div>
     );
@@ -188,7 +210,7 @@ const Index = () => {
           <NavItem href="https://arianstore.org/indext.php" icon={<Package size={22} />} label="ثبت اگهی" />
           <NavItem 
             href="https://arianstore.org/bos.html" 
-            icon={<ShoppingBag size={28} />} 
+            icon={<ShoppingCart size={28} className="text-black" />} 
             label="" 
             className="relative -mt-8 bg-gradient-to-r from-[#3fff7c] to-[#3ffbe0] p-4 rounded-full shadow-lg" 
           />
