@@ -1,0 +1,50 @@
+
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>آرین استور - صفحه نمایش</title>
+  <style>
+    body {
+      font-family: 'Vazirmatn', system-ui, sans-serif;
+      background: #0d1117;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      text-align: center;
+    }
+    
+    h1 {
+      margin-bottom: 30px;
+    }
+    
+    .button {
+      background: linear-gradient(to right, #3fff7c, #3ffbe0);
+      color: black;
+      font-weight: bold;
+      padding: 15px 30px;
+      border-radius: 12px;
+      text-decoration: none;
+      font-size: 18px;
+      border: none;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h1>به آرین استور خوش آمدید</h1>
+  <a href="/?code=AC123456" class="button">نمایش محصول نمونه</a>
+  
+  <script>
+    document.querySelector('.button').addEventListener('click', function(e) {
+      e.preventDefault();
+      window.location.href = '/?code=AC123456';
+    });
+  </script>
+</body>
+</html>
