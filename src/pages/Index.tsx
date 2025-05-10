@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { 
@@ -135,10 +136,10 @@ const Index = () => {
                 {item.media.map((image, index) => (
                   <CarouselItem key={index} className="flex justify-center">
                     <img
-                      src={`https://arianstore.org/image/${image}`}
+                      src={`/image/${image}`}
                       alt={`تصویر ${index + 1}`}
                       className="rounded-lg object-cover h-[250px] md:h-[350px] cursor-pointer"
-                      onClick={() => openLightbox(`https://arianstore.org/image/${image}`)}
+                      onClick={() => openLightbox(`/image/${image}`)}
                     />
                   </CarouselItem>
                 ))}
