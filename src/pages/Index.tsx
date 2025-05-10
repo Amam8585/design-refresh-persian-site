@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { 
@@ -13,8 +12,8 @@ import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/componen
 import { toast } from "@/components/ui/use-toast";
 import { 
   Headset, 
-  Cubes, 
-  BagShopping, 
+  Package, 
+  ShoppingBag, 
   User, 
   Store,
   Tag,
@@ -186,10 +185,10 @@ const Index = () => {
       <nav className="fixed bottom-0 left-0 right-0 bg-background/80 backdrop-blur-md border-t z-40">
         <div className="max-w-md mx-auto flex justify-around items-center h-[86px]">
           <NavItem href="https://t.me/Ar_broken" icon={<Headset size={22} />} label="پشتیبانی" />
-          <NavItem href="https://arianstore.org/indext.php" icon={<Cubes size={22} />} label="ثبت اگهی" />
+          <NavItem href="https://arianstore.org/indext.php" icon={<Package size={22} />} label="ثبت اگهی" />
           <NavItem 
             href="https://arianstore.org/bos.html" 
-            icon={<BagShopping size={28} />} 
+            icon={<ShoppingBag size={28} />} 
             label="" 
             className="relative -mt-10 bg-gradient-to-r from-[#3fff7c] to-[#3ffbe0] p-5 rounded-full shadow-lg" 
           />
