@@ -1,13 +1,264 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+
+import React, { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
+import { 
+  Carousel, 
+  CarouselContent, 
+  CarouselItem, 
+  CarouselNext, 
+  CarouselPrevious 
+} from "@/components/ui/carousel";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
+import { toast } from "@/components/ui/use-toast";
+import { 
+  Headset, 
+  Cubes, 
+  BagShopping, 
+  User, 
+  Store,
+  Tag,
+  Globe,
+  Check,
+  Settings,
+  User as UserIcon
+} from "lucide-react";
+
+interface ItemData {
+  trackingCode: string;
+  region: string;
+  linkType: string;
+  cpCount: string;
+  battlePass: string;
+  sellDesc: string;
+  lease: string;
+  sellPrice: string;
+  media: string[];
+}
 
 const Index = () => {
+  const [item, setItem] = useState<ItemData | null>(null);
+  const [lightboxOpen, setLightboxOpen] = useState<boolean>(false);
+  const [selectedImage, setSelectedImage] = useState<string>("");
+  const location = useLocation();
+  
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const code = params.get('code');
+    
+    if (!code) return;
+    
+    fetch('acc.json?cb=' + Date.now(), {
+      cache: 'no-store'
+    })
+      .then(r => r.json())
+      .then(data => {
+        const foundItem = data.find((o: ItemData) => o.trackingCode === code);
+        if (foundItem) {
+          setItem(foundItem);
+        }
+      })
+      .catch(error => {
+        console.error("Error fetching data:", error);
+      });
+  }, [location]);
+
+  const handleAddToCart = () => {
+    if (!item) return;
+    
+    fetch(`addCart.php?code=${encodeURIComponent(item.trackingCode)}&price=${encodeURIComponent(item.sellPrice)}`)
+      .then(r => r.json())
+      .then(res => {
+        if (res.success) {
+          toast({
+            title: "موفق",
+            description: "محصول با موفقیت به سبد خرید اضافه شد",
+            duration: 3000,
+          });
+        } else if (res.error === 'duplicate') {
+          toast({
+            variant: "destructive",
+            title: "خطا",
+            description: "این محصول قبلاً به سبد خرید اضافه شده است",
+            duration: 3000,
+          });
+        } else {
+          toast({
+            variant: "destructive",
+            title: "خطا",
+            description: "مشکلی در افزودن محصول به سبد خرید رخ داد",
+            duration: 3000,
+          });
+        }
+      });
+  };
+
+  const openLightbox = (imgSrc: string) => {
+    setSelectedImage(imgSrc);
+    setLightboxOpen(true);
+  };
+
+  if (!item) {
+    return (
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <div className="text-center">
+          <div className="animate-pulse text-4xl mb-4">⏳</div>
+          <p className="text-muted-foreground">در حال بارگذاری...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">Welcome to Your Blank App</h1>
-        <p className="text-xl text-gray-600">Start building your amazing project here!</p>
+    <div className="container mx-auto px-4 py-8">
+      <header className="fixed top-0 left-0 right-0 bg-background/80 backdrop-blur-md border-b z-50 shadow-sm">
+        <div className="container mx-auto flex justify-between items-center h-[72px] px-4">
+          <div className="flex items-center gap-3">
+            <img 
+              src="https://arianstore.org/img/IMG_5979.jpeg" 
+              alt="آرین استور" 
+              className="w-10 h-10 rounded-full"
+            />
+            <span className="font-bold text-lg">آرین استور</span>
+          </div>
+          <Button asChild variant="outline" className="bg-gradient-to-r from-[#3fff7c] to-[#3ffbe0] text-black border-none hover:opacity-90 font-bold">
+            <a href="/">خانه</a>
+          </Button>
+        </div>
+      </header>
+      
+      <main className="pt-16">
+        {/* Gallery Section */}
+        <div className="my-6">
+          {item.media && item.media.length > 0 ? (
+            <Carousel className="w-full max-w-4xl mx-auto">
+              <CarouselContent>
+                {item.media.map((image, index) => (
+                  <CarouselItem key={index} className="flex justify-center">
+                    <img
+                      src={`https://arianstore.org/image/${image}`}
+                      alt={`تصویر ${index + 1}`}
+                      className="rounded-lg object-cover h-[250px] md:h-[350px] cursor-pointer"
+                      onClick={() => openLightbox(`https://arianstore.org/image/${image}`)}
+                    />
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+              <CarouselPrevious className="left-2" />
+              <CarouselNext className="right-2" />
+            </Carousel>
+          ) : (
+            <div className="bg-muted h-[200px] rounded-lg flex items-center justify-center">
+              <p className="text-muted-foreground">تصویری موجود نیست</p>
+            </div>
+          )}
+        </div>
+
+        {/* Details Section */}
+        <Card className="my-8 border bg-card/50 backdrop-blur-sm shadow-lg">
+          <CardHeader className="border-b">
+            <CardTitle className="text-xl md:text-2xl text-center">مشخصات اکانت</CardTitle>
+          </CardHeader>
+          <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-6">
+            <DetailItem icon={<Tag size={18} />} title="کد آگهی‌ اکانت" value={item.trackingCode} />
+            <DetailItem icon={<Globe size={18} />} title="ریجن‌ اکانت" value={item.region} />
+            <DetailItem icon={<Settings size={18} />} title="لینک ‌اکانت" value={item.linkType} />
+            <DetailItem icon={<Check size={18} />} title="تعداد‌ سیپی" value={item.cpCount} />
+            <DetailItem icon={<Check size={18} />} title="وضعیت ‌بتل ‌پس" value={item.battlePass} />
+            <DetailItem icon={<Check size={18} />} title="توضیحات ‌فروشنده" value={item.sellDesc} />
+            <DetailItem icon={<UserIcon size={18} />} title="تضمین ‌با‌ احراز ‌هویت" value={item.lease} />
+            <DetailItem icon={<Check size={18} />} title="قیمت ‌اکانت به تومان" value={item.sellPrice} highlight />
+            <DetailItem icon={<UserIcon size={18} />} title="مدیریت ‌واسطه" value="@Ar_broken" />
+            <DetailItem icon={<UserIcon size={18} />} title="ادمین ‌معاملات ‌سایت" value="@Adm_Site" />
+          </CardContent>
+          <CardFooter className="flex justify-center pt-2 pb-6">
+            <Button 
+              onClick={handleAddToCart} 
+              className="w-full max-w-md py-6 text-lg font-bold bg-gradient-to-r from-[#3fff7c] to-[#3ffbe0] text-black hover:opacity-90"
+            >
+              افزودن به سبد خرید
+            </Button>
+          </CardFooter>
+        </Card>
+      </main>
+
+      {/* Bottom Navigation */}
+      <nav className="fixed bottom-0 left-0 right-0 bg-background/80 backdrop-blur-md border-t z-40">
+        <div className="max-w-md mx-auto flex justify-around items-center h-[86px]">
+          <NavItem href="https://t.me/Ar_broken" icon={<Headset size={22} />} label="پشتیبانی" />
+          <NavItem href="https://arianstore.org/indext.php" icon={<Cubes size={22} />} label="ثبت اگهی" />
+          <NavItem 
+            href="https://arianstore.org/bos.html" 
+            icon={<BagShopping size={28} />} 
+            label="" 
+            className="relative -mt-10 bg-gradient-to-r from-[#3fff7c] to-[#3ffbe0] p-5 rounded-full shadow-lg" 
+          />
+          <NavItem href="https://arianstore.org" icon={<User size={22} />} label="خانه" />
+          <NavItem href="https://arianstore.org/Por.html" icon={<Store size={22} />} label="محصولات" />
+        </div>
+      </nav>
+
+      {/* Lightbox */}
+      {lightboxOpen && (
+        <div 
+          className="fixed inset-0 bg-black/90 flex items-center justify-center z-50"
+          onClick={() => setLightboxOpen(false)}
+        >
+          <button 
+            className="absolute top-4 right-4 text-white text-2xl" 
+            onClick={() => setLightboxOpen(false)}
+          >
+            &times;
+          </button>
+          <img 
+            src={selectedImage} 
+            alt="تصویر بزرگ" 
+            className="max-w-[90%] max-h-[90vh] object-contain"
+            onClick={(e) => e.stopPropagation()}
+          />
+        </div>
+      )}
+    </div>
+  );
+};
+
+interface DetailItemProps {
+  icon: React.ReactNode;
+  title: string;
+  value: string;
+  highlight?: boolean;
+}
+
+const DetailItem = ({ icon, title, value, highlight = false }: DetailItemProps) => {
+  return (
+    <div className={`flex items-start gap-3 p-3 rounded-lg ${highlight ? 'bg-primary/10 border border-primary/20' : 'border'}`}>
+      <div className={`text-primary mt-1 ${highlight ? 'text-primary' : ''}`}>
+        {icon}
+      </div>
+      <div>
+        <h3 className="font-bold mb-1">{title}</h3>
+        <p className={`text-sm ${highlight ? 'text-primary font-bold' : 'text-muted-foreground'}`}>{value}</p>
       </div>
     </div>
+  );
+};
+
+interface NavItemProps {
+  href: string;
+  icon: React.ReactNode;
+  label: string;
+  className?: string;
+}
+
+const NavItem = ({ href, icon, label, className = "" }: NavItemProps) => {
+  return (
+    <a 
+      href={href} 
+      className={`flex flex-col items-center gap-1 text-xs ${className ? className : "text-[#45d1b0]"}`}
+    >
+      <span className={className ? "text-black" : ""}>{icon}</span>
+      {label && <span>{label}</span>}
+    </a>
   );
 };
 
