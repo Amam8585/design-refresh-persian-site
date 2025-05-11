@@ -1,0 +1,889 @@
+
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>آرین استور - نمایش محصول</title>
+  <meta name="description" content="اکانت لول 150 با اسکین‌های کمیاب و گان‌های آپگرید شده به همراه کارکترهای ویژه - قیمت: 2,850,000 تومان">
+  <meta property="og:title" content="آرین استور - AC123456">
+  <meta property="og:description" content="اکانت لول 150 با اسکین‌های کمیاب و گان‌های آپگرید شده به همراه کارکترهای ویژه">
+  <meta property="og:image" content="/image/sample1.jpg">
+  <!-- فونت وزیر -->
+  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --background: #111827;
+      --foreground: #ffffff;
+      --card: #1e293b;
+      --card-foreground: #ffffff;
+      --border: #1e293b;
+      --primary: #3fff7c;
+      --primary-secondary: #3ffbe0;
+      --primary-foreground: #000000;
+      --muted: #334155;
+      --muted-foreground: #94a3b8;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Vazirmatn', system-ui, sans-serif;
+      background: var(--background);
+      color: var(--foreground);
+      direction: rtl;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 16px;
+    }
+
+    /* هدر */
+    .header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 72px;
+      background-color: rgba(17, 24, 39, 0.8);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--border);
+      z-index: 50;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .header-container {
+      height: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+    }
+
+    .brand-name {
+      font-weight: bold;
+      font-size: 18px;
+    }
+
+    .home-button {
+      background: linear-gradient(to right, var(--primary), var(--primary-secondary));
+      color: var(--primary-foreground);
+      border: none;
+      border-radius: 8px;
+      padding: 8px 16px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: opacity 0.2s;
+      text-decoration: none;
+      font-family: 'Vazirmatn', system-ui, sans-serif;
+      font-size: 14px;
+    }
+
+    .home-button:hover {
+      opacity: 0.9;
+    }
+
+    /* محتوای اصلی */
+    .main {
+      padding-top: 96px;
+      padding-bottom: 128px;
+    }
+
+    /* گالری */
+    .gallery {
+      margin: 32px 0;
+      position: relative;
+    }
+
+    .carousel {
+      position: relative;
+      max-width: 768px;
+      margin: 0 auto;
+      overflow: hidden;
+      border-radius: 12px;
+    }
+
+    .carousel-inner {
+      display: flex;
+      transition: transform 0.3s ease;
+    }
+
+    .carousel-item {
+      flex: 0 0 100%;
+      display: flex;
+      justify-content: center;
+    }
+
+    .carousel-image {
+      height: 250px;
+      object-fit: cover;
+      cursor: pointer;
+      border-radius: 8px;
+    }
+
+    @media (min-width: 768px) {
+      .carousel-image {
+        height: 350px;
+      }
+    }
+
+    .carousel-prev,
+    .carousel-next {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background-color: rgba(255, 255, 255, 0.2);
+      border: none;
+      color: white;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 1;
+    }
+
+    .carousel-prev {
+      left: 10px;
+    }
+
+    .carousel-next {
+      right: 10px;
+    }
+
+    /* کارت مشخصات */
+    .card {
+      margin: 32px 0;
+      border-radius: 12px;
+      background-color: rgba(30, 41, 59, 0.5);
+      backdrop-filter: blur(8px);
+      overflow: hidden;
+      border: 1px solid var(--border);
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    }
+
+    .card-header {
+      padding: 20px;
+      border-bottom: 1px solid var(--border);
+      text-align: center;
+    }
+
+    .card-title {
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    @media (min-width: 768px) {
+      .card-title {
+        font-size: 24px;
+      }
+    }
+
+    .card-content {
+      padding: 24px;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 24px;
+    }
+
+    @media (min-width: 768px) {
+      .card-content {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    .detail-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+    }
+
+    .detail-item.highlight {
+      background-color: rgba(63, 255, 124, 0.1);
+      border-color: rgba(63, 255, 124, 0.2);
+    }
+
+    .detail-icon {
+      color: var(--primary);
+      margin-top: 4px;
+    }
+
+    .detail-content h3 {
+      font-weight: bold;
+      margin-bottom: 4px;
+    }
+
+    .detail-content p {
+      font-size: 14px;
+      color: var(--muted-foreground);
+    }
+
+    .detail-item.highlight p {
+      color: var(--primary);
+      font-weight: bold;
+    }
+
+    .card-footer {
+      padding: 24px 32px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .add-to-cart {
+      width: 100%;
+      max-width: 400px;
+      background: linear-gradient(to right, var(--primary), var(--primary-secondary));
+      color: var(--primary-foreground);
+      border: none;
+      border-radius: 8px;
+      padding: 16px;
+      font-size: 18px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: opacity 0.2s;
+      font-family: 'Vazirmatn', system-ui, sans-serif;
+    }
+
+    .add-to-cart:hover {
+      opacity: 0.9;
+    }
+
+    /* هدر پایین */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background-color: rgba(17, 24, 39, 0.8);
+      backdrop-filter: blur(8px);
+      border-top: 1px solid var(--border);
+      z-index: 40;
+    }
+
+    .bottom-nav-container {
+      max-width: 500px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      height: 72px;
+      position: relative;
+    }
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      text-decoration: none;
+      font-size: 12px;
+      color: #45d1b0;
+    }
+
+    .nav-center {
+      position: relative;
+      margin-top: -32px;
+      background: linear-gradient(to right, var(--primary), var(--primary-secondary));
+      padding: 16px;
+      border-radius: 50%;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+
+    .nav-center svg {
+      color: black;
+    }
+
+    /* لایت‌باکس */
+    .lightbox {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(0, 0, 0, 0.95);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+    }
+
+    .lightbox.active {
+      display: flex;
+    }
+
+    .lightbox-close {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      background: none;
+      border: none;
+      color: white;
+      font-size: 24px;
+      cursor: pointer;
+    }
+
+    .lightbox-prev,
+    .lightbox-next {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background-color: rgba(255, 255, 255, 0.1);
+      border: none;
+      color: white;
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+
+    .lightbox-prev {
+      left: 16px;
+    }
+
+    .lightbox-next {
+      right: 16px;
+    }
+
+    .lightbox-image {
+      max-width: 90%;
+      max-height: 90vh;
+      object-fit: contain;
+    }
+
+    .lightbox-counter {
+      position: absolute;
+      bottom: 16px;
+      left: 0;
+      right: 0;
+      text-align: center;
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    /* لودینگ */
+    .loading {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 60vh;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .spinner {
+      width: 48px;
+      height: 48px;
+      border: 4px solid rgba(63, 255, 124, 0.1);
+      border-left-color: var(--primary);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .loading-text {
+      color: var(--muted-foreground);
+    }
+
+    /* نوتیفیکیشن */
+    .toast-container {
+      position: fixed;
+      top: 85px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 100;
+    }
+
+    .toast {
+      padding: 16px 24px;
+      border-radius: 8px;
+      margin-bottom: 8px;
+      font-size: 14px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      animation: slide-down 0.3s ease-out forwards;
+      opacity: 0;
+      transform: translateY(-20px);
+    }
+
+    .toast-success {
+      background: linear-gradient(to right, #ecfdf5, #d1fae5);
+      border: 1px solid #6ee7b7;
+      color: #065f46;
+    }
+
+    .toast-error {
+      background: linear-gradient(to right, #fef2f2, #fee2e2);
+      border: 1px solid #fca5a5;
+      color: #b91c1c;
+    }
+
+    @keyframes slide-down {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fade-out {
+      to {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .not-found {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 60vh;
+      flex-direction: column;
+    }
+
+    .not-found-emoji {
+      font-size: 36px;
+      margin-bottom: 16px;
+    }
+
+    .not-found-text {
+      color: var(--muted-foreground);
+    }
+  </style>
+</head>
+<body>
+  <!-- هدر -->
+  <header class="header">
+    <div class="container header-container">
+      <div class="logo-container">
+        <img src="https://arianstore.org/img/IMG_5979.jpeg" alt="آرین استور" class="logo">
+        <span class="brand-name">آرین استور</span>
+      </div>
+      <a href="/" class="home-button">خانه</a>
+    </div>
+  </header>
+
+  <!-- محتوای اصلی -->
+  <main class="main container">
+    <div id="loading" class="loading">
+      <div class="spinner"></div>
+      <p class="loading-text">در حال بارگذاری اطلاعات...</p>
+    </div>
+
+    <div id="content" class="hidden">
+      <!-- گالری -->
+      <div class="gallery">
+        <div class="carousel">
+          <div class="carousel-inner" id="carousel-inner">
+            <!-- تصاویر به صورت پویا اضافه می‌شوند -->
+          </div>
+          <button class="carousel-prev" id="carousel-prev">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="m9 18 6-6-6-6"/>
+            </svg>
+          </button>
+          <button class="carousel-next" id="carousel-next">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="m15 18-6-6 6-6"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- کارت مشخصات -->
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">مشخصات اکانت</h2>
+        </div>
+        <div class="card-content" id="item-details">
+          <!-- جزئیات محصول به صورت پویا اضافه می‌شود -->
+        </div>
+        <div class="card-footer">
+          <button class="add-to-cart" id="add-to-cart">افزودن به سبد خرید</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="not-found" class="not-found hidden">
+      <div class="not-found-emoji">🔍</div>
+      <p class="not-found-text">محصولی یافت نشد</p>
+    </div>
+  </main>
+
+  <!-- هدر پایین -->
+  <nav class="bottom-nav">
+    <div class="bottom-nav-container">
+      <a href="https://t.me/Ar_broken" class="nav-item">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 12.5c0 .5-.3.9-.7 1.1L12 18l-8.3-4.4a1.3 1.3 0 0 1-.7-1V8.5c0-.5.3-.9.7-1.1L12 3l8.3 4.4c.4.2.7.6.7 1.1z"/>
+          <path d="M12 8v8"/>
+          <path d="m8 9 4-1 4 1"/>
+        </svg>
+        <span>پشتیبانی</span>
+      </a>
+      <a href="https://arianstore.org/indext.php" class="nav-item">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M5 7.5C5 6.12 6.12 5 7.5 5H16.5C17.88 5 19 6.12 19 7.5V16.5C19 17.88 17.88 19 16.5 19H7.5C6.12 19 5 17.88 5 16.5V7.5Z"/>
+          <path d="M5 7.5H19V11.5H5V7.5Z"/>
+          <path d="M10.5 15.5H13.5"/>
+        </svg>
+        <span>ثبت آگهی</span>
+      </a>
+      <a href="https://arianstore.org/bos.html" class="nav-item nav-center">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="8" cy="21" r="1"/>
+          <circle cx="19" cy="21" r="1"/>
+          <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/>
+        </svg>
+      </a>
+      <a href="https://arianstore.org" class="nav-item">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
+          <circle cx="12" cy="7" r="4"/>
+        </svg>
+        <span>خانه</span>
+      </a>
+      <a href="https://arianstore.org/Por.html" class="nav-item">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="m2 7 4.41-4.41A2 2 0 0 1 7.83 2h8.34a2 2 0 0 1 1.42.59L22 7"/>
+          <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>
+          <path d="M15 22v-4a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v4"/>
+          <path d="M2 7h20"/>
+          <path d="M22 7v3a2 2 0 0 1-2 2v0a2 2 0 0 1-2-2V7"/>
+          <path d="M18 12v10"/>
+          <path d="M4 7v3a2 2 0 0 0 2 2v0a2 2 0 0 0 2-2V7"/>
+          <path d="M6 12v10"/>
+        </svg>
+        <span>محصولات</span>
+      </a>
+    </div>
+  </nav>
+
+  <!-- لایت‌باکس -->
+  <div class="lightbox" id="lightbox">
+    <button class="lightbox-close" id="lightbox-close">&times;</button>
+    <button class="lightbox-prev" id="lightbox-prev">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="15 18 9 12 15 6" />
+      </svg>
+    </button>
+    <img src="" alt="تصویر بزرگ" class="lightbox-image" id="lightbox-image">
+    <button class="lightbox-next" id="lightbox-next">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="9 18 15 12 9 6" />
+      </svg>
+    </button>
+    <div class="lightbox-counter" id="lightbox-counter"></div>
+  </div>
+
+  <!-- نوتیفیکیشن -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <script>
+    // داده‌های محصول
+    const productData = {
+      "trackingCode": "AC123456",
+      "region": "ایران",
+      "linkType": "Facebook",
+      "cpCount": "6500",
+      "battlePass": "فعال - سیزن 12",
+      "sellDesc": "اکانت لول 150 با اسکین‌های کمیاب و گان‌های آپگرید شده به همراه کارکترهای ویژه",
+      "lease": "دارای گارانتی یکساله",
+      "sellPrice": "2,850,000",
+      "media": [
+        "sample1.jpg",
+        "sample2.jpg",
+        "sample3.jpg",
+        "sample4.jpg"
+      ]
+    };
+
+    // تعریف آیکون‌های مختلف
+    const icons = {
+      tag: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2H2v10l9.29 9.29c.94.94 2.48.94 3.42 0l6.58-6.58c.94-.94.94-2.48 0-3.42L12 2Z"/><path d="M7 7h.01"/></svg>',
+      globe: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>',
+      settings: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>',
+      award: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/></svg>',
+      fileCheck: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><path d="m9 15 2 2 4-4"/></svg>',
+      shieldCheck: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-8 7.5S4 18 4 13V8c0-1 .4-2 1.2-2.5C9.5 2.5 11 2 12 2c1 0 2.5.5 6.8 3.5.8.5 1.2 1.5 1.2 2.5v5z"/><path d="m9 12 2 2 4-4"/></svg>',
+      badgeCheck: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z"/><path d="m9 12 2 2 4-4"/></svg>',
+      banknote: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="12" x="2" y="6" rx="2"/><circle cx="12" cy="12" r="2"/><path d="M6 12h.01M18 12h.01"/></svg>',
+      user: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>'
+    };
+
+    // اطلاعات محصول
+    const details = [
+      { icon: 'tag', title: 'کد آگهی‌ اکانت', value: productData.trackingCode },
+      { icon: 'globe', title: 'ریجن‌ اکانت', value: productData.region },
+      { icon: 'settings', title: 'لینک ‌اکانت', value: productData.linkType },
+      { icon: 'award', title: 'تعداد‌ سیپی', value: productData.cpCount },
+      { icon: 'fileCheck', title: 'وضعیت ‌بتل ‌پس', value: productData.battlePass },
+      { icon: 'shieldCheck', title: 'توضیحات ‌فروشنده', value: productData.sellDesc },
+      { icon: 'badgeCheck', title: 'تضمین ‌با‌ احراز ‌هویت', value: productData.lease },
+      { icon: 'banknote', title: 'قیمت ‌اکانت به تومان', value: productData.sellPrice, highlight: true },
+      { icon: 'user', title: 'مدیریت ‌واسطه', value: '@Ar_broken' },
+      { icon: 'user', title: 'ادمین ‌معاملات ‌سایت', value: '@Adm_Site' }
+    ];
+
+    // متغیرهای گلوبال
+    let currentSlide = 0;
+    let lightboxIndex = 0;
+    let timeoutId = null;
+
+    // نمایش لودینگ و بارگذاری اطلاعات
+    document.addEventListener('DOMContentLoaded', function() {
+      setTimeout(() => {
+        document.getElementById('loading').classList.add('hidden');
+        document.getElementById('content').classList.remove('hidden');
+        renderImages();
+        renderDetails();
+        setupEventListeners();
+      }, 1000); // شبیه‌سازی لودینگ با یک ثانیه تأخیر
+    });
+
+    // نمایش تصاویر در کروسل
+    function renderImages() {
+      const carouselInner = document.getElementById('carousel-inner');
+      carouselInner.innerHTML = '';
+      
+      if (productData.media && productData.media.length > 0) {
+        productData.media.forEach((image, index) => {
+          const item = document.createElement('div');
+          item.className = 'carousel-item';
+          
+          const img = document.createElement('img');
+          img.src = `/image/${image}`;
+          img.alt = `تصویر ${index + 1}`;
+          img.className = 'carousel-image';
+          
+          img.addEventListener('click', () => {
+            openLightbox(index);
+          });
+          
+          item.appendChild(img);
+          carouselInner.appendChild(item);
+        });
+        
+        updateCarousel();
+      } else {
+        carouselInner.innerHTML = `
+          <div class="carousel-item">
+            <div style="height: 200px; width: 100%; background-color: var(--muted); border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+              <p style="color: var(--muted-foreground)">تصویری موجود نیست</p>
+            </div>
+          </div>
+        `;
+      }
+    }
+
+    // نمایش مشخصات محصول
+    function renderDetails() {
+      const itemDetails = document.getElementById('item-details');
+      itemDetails.innerHTML = '';
+      
+      details.forEach(detail => {
+        const div = document.createElement('div');
+        div.className = `detail-item ${detail.highlight ? 'highlight' : ''}`;
+        
+        div.innerHTML = `
+          <div class="detail-icon">
+            ${icons[detail.icon]}
+          </div>
+          <div class="detail-content">
+            <h3>${detail.title}</h3>
+            <p>${detail.value}</p>
+          </div>
+        `;
+        
+        itemDetails.appendChild(div);
+      });
+    }
+
+    // تنظیم رویدادها
+    function setupEventListeners() {
+      // رویدادهای کروسل
+      document.getElementById('carousel-next').addEventListener('click', nextSlide);
+      document.getElementById('carousel-prev').addEventListener('click', prevSlide);
+      
+      // رویدادهای لایت‌باکس
+      document.getElementById('lightbox-close').addEventListener('click', closeLightbox);
+      document.getElementById('lightbox-next').addEventListener('click', () => navigateLightbox('next'));
+      document.getElementById('lightbox-prev').addEventListener('click', () => navigateLightbox('prev'));
+      document.getElementById('lightbox').addEventListener('click', function(e) {
+        if (e.target === this) {
+          closeLightbox();
+        }
+      });
+      
+      // رویداد افزودن به سبد خرید
+      document.getElementById('add-to-cart').addEventListener('click', addToCart);
+      
+      // کلیدهای کیبورد برای لایت‌باکس
+      document.addEventListener('keydown', function(e) {
+        if (!document.getElementById('lightbox').classList.contains('active')) return;
+        
+        if (e.key === 'Escape') {
+          closeLightbox();
+        } else if (e.key === 'ArrowRight') {
+          navigateLightbox('prev'); // معکوس به دلیل RTL
+        } else if (e.key === 'ArrowLeft') {
+          navigateLightbox('next'); // معکوس به دلیل RTL
+        }
+      });
+    }
+
+    // بروزرسانی کروسل
+    function updateCarousel() {
+      if (!productData.media || productData.media.length === 0) return;
+      
+      const carouselInner = document.getElementById('carousel-inner');
+      carouselInner.style.transform = `translateX(${currentSlide * 100}%)`;
+    }
+
+    // اسلاید بعدی
+    function nextSlide() {
+      if (!productData.media || productData.media.length <= 1) return;
+      
+      currentSlide = (currentSlide - 1) % productData.media.length;
+      if (currentSlide < 0) {
+        currentSlide = productData.media.length - 1;
+      }
+      updateCarousel();
+    }
+
+    // اسلاید قبلی
+    function prevSlide() {
+      if (!productData.media || productData.media.length <= 1) return;
+      
+      currentSlide = (currentSlide + 1) % productData.media.length;
+      updateCarousel();
+    }
+
+    // باز کردن لایت‌باکس
+    function openLightbox(index) {
+      const lightbox = document.getElementById('lightbox');
+      const lightboxImage = document.getElementById('lightbox-image');
+      const lightboxCounter = document.getElementById('lightbox-counter');
+      
+      lightboxIndex = index;
+      lightboxImage.src = `/image/${productData.media[index]}`;
+      lightboxCounter.textContent = `${index + 1} / ${productData.media.length}`;
+      lightbox.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    // بستن لایت‌باکس
+    function closeLightbox() {
+      const lightbox = document.getElementById('lightbox');
+      lightbox.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    // پیمایش در لایت‌باکس
+    function navigateLightbox(direction) {
+      if (!productData.media || productData.media.length <= 1) return;
+      
+      if (direction === 'next') {
+        lightboxIndex = (lightboxIndex + 1) % productData.media.length;
+      } else {
+        lightboxIndex = (lightboxIndex - 1 + productData.media.length) % productData.media.length;
+      }
+      
+      const lightboxImage = document.getElementById('lightbox-image');
+      const lightboxCounter = document.getElementById('lightbox-counter');
+      
+      lightboxImage.src = `/image/${productData.media[lightboxIndex]}`;
+      lightboxCounter.textContent = `${lightboxIndex + 1} / ${productData.media.length}`;
+    }
+
+    // افزودن به سبد خرید
+    function addToCart() {
+      showToast({
+        title: 'موفق ✓',
+        message: 'محصول با موفقیت به سبد خرید اضافه شد',
+        type: 'success'
+      });
+      
+      // در حالت واقعی، اینجا درخواست به سرور ارسال می‌شود
+      // fetch(`addCart.php?code=${encodeURIComponent(productData.trackingCode)}&price=${encodeURIComponent(productData.sellPrice)}`)
+      //   .then(response => response.json())
+      //   .then(data => {
+      //     if (data.success) {
+      //       showToast({
+      //         title: 'موفق ✓',
+      //         message: 'محصول با موفقیت به سبد خرید اضافه شد',
+      //         type: 'success'
+      //       });
+      //     } else if (data.error === 'duplicate') {
+      //       showToast({
+      //         title: 'خطا',
+      //         message: 'این محصول قبلاً به سبد خرید اضافه شده است',
+      //         type: 'error'
+      //       });
+      //     } else {
+      //       showToast({
+      //         title: 'خطا',
+      //         message: 'مشکلی در افزودن محصول به سبد خرید رخ داد',
+      //         type: 'error'
+      //       });
+      //     }
+      //   });
+    }
+
+    // نمایش نوتیفیکیشن
+    function showToast({ title, message, type = 'success', duration = 3000 }) {
+      const toastContainer = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      toast.className = `toast toast-${type}`;
+      toast.innerHTML = `<strong>${title}</strong>: ${message}`;
+      
+      toastContainer.appendChild(toast);
+      
+      // حذف توست‌های قبلی پس از نمایش توست جدید
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
+      
+      // حذف توست پس از مدت زمان مشخص
+      timeoutId = setTimeout(() => {
+        toast.style.animation = 'fade-out 0.3s forwards';
+        setTimeout(() => {
+          if (toast.parentNode) {
+            toastContainer.removeChild(toast);
+          }
+        }, 300);
+      }, duration);
+    }
+  </script>
+</body>
+</html>
