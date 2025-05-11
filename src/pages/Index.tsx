@@ -18,12 +18,18 @@ import {
   Store,
   Tag,
   Globe,
-  Check,
+  FileCheck,
+  Award,
+  Banknote,
+  ShieldCheck,
+  BadgeCheck,
   Settings,
-  User as UserIcon,
-  ShoppingCart,
-  LoaderCircle
+  ShoppingBag,
+  LoaderCircle,
+  ChevronLeft,
+  ChevronRight
 } from "lucide-react";
+import { Helmet } from "react-helmet-async";
 
 interface ItemData {
   trackingCode: string;
@@ -41,6 +47,7 @@ const Index = () => {
   const [item, setItem] = useState<ItemData | null>(null);
   const [lightboxOpen, setLightboxOpen] = useState<boolean>(false);
   const [selectedImage, setSelectedImage] = useState<string>("");
+  const [selectedImageIndex, setSelectedImageIndex] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(true);
   const location = useLocation();
   
@@ -103,9 +110,24 @@ const Index = () => {
       });
   };
 
-  const openLightbox = (imgSrc: string) => {
+  const openLightbox = (imgSrc: string, index: number) => {
     setSelectedImage(imgSrc);
+    setSelectedImageIndex(index);
     setLightboxOpen(true);
+  };
+
+  const navigateImage = (direction: 'next' | 'prev') => {
+    if (!item || !item.media) return;
+    
+    let newIndex;
+    if (direction === 'next') {
+      newIndex = (selectedImageIndex + 1) % item.media.length;
+    } else {
+      newIndex = (selectedImageIndex - 1 + item.media.length) % item.media.length;
+    }
+    
+    setSelectedImageIndex(newIndex);
+    setSelectedImage(`/image/${item.media[newIndex]}`);
   };
 
   if (loading) {
@@ -132,6 +154,16 @@ const Index = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
+      <Helmet>
+        <title>{`آرین استور - ${item.trackingCode}`}</title>
+        <meta name="description" content={`${item.sellDesc} - قیمت: ${item.sellPrice} تومان`} />
+        <meta property="og:title" content={`آرین استور - ${item.trackingCode}`} />
+        <meta property="og:description" content={item.sellDesc} />
+        {item.media && item.media.length > 0 && (
+          <meta property="og:image" content={`/image/${item.media[0]}`} />
+        )}
+      </Helmet>
+      
       <header className="fixed top-0 left-0 right-0 bg-background/80 backdrop-blur-md border-b z-50 shadow-sm">
         <div className="container mx-auto flex justify-between items-center h-[72px] px-4">
           <div className="flex items-center gap-3">
@@ -148,9 +180,9 @@ const Index = () => {
         </div>
       </header>
       
-      <main className="pt-16 pb-32">
+      <main className="pt-24 pb-32">
         {/* Gallery Section */}
-        <div className="my-6">
+        <div className="my-8">
           {item.media && item.media.length > 0 ? (
             <Carousel className="w-full max-w-4xl mx-auto">
               <CarouselContent>
@@ -160,7 +192,7 @@ const Index = () => {
                       src={`/image/${image}`}
                       alt={`تصویر ${index + 1}`}
                       className="rounded-lg object-cover h-[250px] md:h-[350px] cursor-pointer"
-                      onClick={() => openLightbox(`/image/${image}`)}
+                      onClick={() => openLightbox(`/image/${image}`, index)}
                     />
                   </CarouselItem>
                 ))}
@@ -184,15 +216,15 @@ const Index = () => {
             <DetailItem icon={<Tag size={18} />} title="کد آگهی‌ اکانت" value={item.trackingCode} />
             <DetailItem icon={<Globe size={18} />} title="ریجن‌ اکانت" value={item.region} />
             <DetailItem icon={<Settings size={18} />} title="لینک ‌اکانت" value={item.linkType} />
-            <DetailItem icon={<Check size={18} />} title="تعداد‌ سیپی" value={item.cpCount} />
-            <DetailItem icon={<Check size={18} />} title="وضعیت ‌بتل ‌پس" value={item.battlePass} />
-            <DetailItem icon={<Check size={18} />} title="توضیحات ‌فروشنده" value={item.sellDesc} />
-            <DetailItem icon={<UserIcon size={18} />} title="تضمین ‌با‌ احراز ‌هویت" value={item.lease} />
-            <DetailItem icon={<Check size={18} />} title="قیمت ‌اکانت به تومان" value={item.sellPrice} highlight />
-            <DetailItem icon={<UserIcon size={18} />} title="مدیریت ‌واسطه" value="@Ar_broken" />
-            <DetailItem icon={<UserIcon size={18} />} title="ادمین ‌معاملات ‌سایت" value="@Adm_Site" />
+            <DetailItem icon={<Award size={18} />} title="تعداد‌ سیپی" value={item.cpCount} />
+            <DetailItem icon={<FileCheck size={18} />} title="وضعیت ‌بتل ‌پس" value={item.battlePass} />
+            <DetailItem icon={<ShieldCheck size={18} />} title="توضیحات ‌فروشنده" value={item.sellDesc} />
+            <DetailItem icon={<BadgeCheck size={18} />} title="تضمین ‌با‌ احراز ‌هویت" value={item.lease} />
+            <DetailItem icon={<Banknote size={18} />} title="قیمت ‌اکانت به تومان" value={item.sellPrice} highlight />
+            <DetailItem icon={<User size={18} />} title="مدیریت ‌واسطه" value="@Ar_broken" />
+            <DetailItem icon={<User size={18} />} title="ادمین ‌معاملات ‌سایت" value="@Adm_Site" />
           </CardContent>
-          <CardFooter className="flex justify-center pt-2 pb-6">
+          <CardFooter className="flex justify-center pt-6 pb-8">
             <Button 
               onClick={handleAddToCart} 
               className="w-full max-w-md py-6 text-lg font-bold bg-gradient-to-r from-[#3fff7c] to-[#3ffbe0] text-black hover:opacity-90"
@@ -210,7 +242,7 @@ const Index = () => {
           <NavItem href="https://arianstore.org/indext.php" icon={<Package size={22} />} label="ثبت اگهی" />
           <NavItem 
             href="https://arianstore.org/bos.html" 
-            icon={<ShoppingCart size={28} className="text-black" />} 
+            icon={<ShoppingBag size={28} className="text-black" />} 
             label="" 
             className="relative -mt-8 bg-gradient-to-r from-[#3fff7c] to-[#3ffbe0] p-4 rounded-full shadow-lg" 
           />
@@ -219,10 +251,10 @@ const Index = () => {
         </div>
       </nav>
 
-      {/* Lightbox */}
+      {/* Lightbox with Navigation */}
       {lightboxOpen && (
         <div 
-          className="fixed inset-0 bg-black/90 flex items-center justify-center z-50"
+          className="fixed inset-0 bg-black/95 flex items-center justify-center z-50"
           onClick={() => setLightboxOpen(false)}
         >
           <button 
@@ -231,12 +263,37 @@ const Index = () => {
           >
             &times;
           </button>
+          
+          <button 
+            className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/10 p-2 rounded-full hover:bg-white/20"
+            onClick={(e) => {
+              e.stopPropagation();
+              navigateImage('prev');
+            }}
+          >
+            <ChevronLeft size={24} className="text-white" />
+          </button>
+          
           <img 
             src={selectedImage} 
             alt="تصویر بزرگ" 
             className="max-w-[90%] max-h-[90vh] object-contain"
             onClick={(e) => e.stopPropagation()}
           />
+          
+          <button 
+            className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/10 p-2 rounded-full hover:bg-white/20"
+            onClick={(e) => {
+              e.stopPropagation();
+              navigateImage('next');
+            }}
+          >
+            <ChevronRight size={24} className="text-white" />
+          </button>
+          
+          <div className="absolute bottom-4 left-0 right-0 text-center text-white/70">
+            {item.media && `${selectedImageIndex + 1} / ${item.media.length}`}
+          </div>
         </div>
       )}
     </div>
