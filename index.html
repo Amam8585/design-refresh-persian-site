@@ -8,7 +8,7 @@
   <meta name="description" content="اکانت لول 150 با اسکین‌های کمیاب و گان‌های آپگرید شده به همراه کارکترهای ویژه - قیمت: 2,850,000 تومان">
   <meta property="og:title" content="آرین استور - AC123456">
   <meta property="og:description" content="اکانت لول 150 با اسکین‌های کمیاب و گان‌های آپگرید شده به همراه کارکترهای ویژه">
-  <meta property="og:image" content="/image/sample1.jpg">
+  <meta property="og:image" content="/public/image/sample1.jpg">
   <!-- فونت وزیر -->
   <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;700&display=swap" rel="stylesheet">
   <style>
@@ -509,12 +509,12 @@
           </div>
           <button class="carousel-prev" id="carousel-prev">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="m9 18 6-6-6-6"/>
+              <path d="m15 18-6-6 6-6"/>
             </svg>
           </button>
           <button class="carousel-next" id="carousel-next">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="m15 18-6-6 6-6"/>
+              <path d="m9 18 6-6-6-6"/>
             </svg>
           </button>
         </div>
@@ -536,7 +536,7 @@
 
     <div id="not-found" class="not-found hidden">
       <div class="not-found-emoji">🔍</div>
-      <p class="not-found-text">محصولی یافت نشد</p>
+      <p class="not-found-text">محصولی با این کد یافت نشد</p>
     </div>
   </main>
 
@@ -545,9 +545,8 @@
     <div class="bottom-nav-container">
       <a href="https://t.me/Ar_broken" class="nav-item">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M21 12.5c0 .5-.3.9-.7 1.1L12 18l-8.3-4.4a1.3 1.3 0 0 1-.7-1V8.5c0-.5.3-.9.7-1.1L12 3l8.3 4.4c.4.2.7.6.7 1.1z"/>
-          <path d="M12 8v8"/>
-          <path d="m8 9 4-1 4 1"/>
+          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+          <path d="M10 7.5L14 10l-4 2.5v-5z"/>
         </svg>
         <span>پشتیبانی</span>
       </a>
@@ -594,13 +593,13 @@
     <button class="lightbox-close" id="lightbox-close">&times;</button>
     <button class="lightbox-prev" id="lightbox-prev">
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <polyline points="15 18 9 12 15 6" />
+        <polyline points="9 18 15 12 9 6" />
       </svg>
     </button>
     <img src="" alt="تصویر بزرگ" class="lightbox-image" id="lightbox-image">
     <button class="lightbox-next" id="lightbox-next">
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <polyline points="9 18 15 12 9 6" />
+        <polyline points="15 18 9 12 15 6" />
       </svg>
     </button>
     <div class="lightbox-counter" id="lightbox-counter"></div>
@@ -610,23 +609,11 @@
   <div class="toast-container" id="toast-container"></div>
 
   <script>
-    // داده‌های محصول
-    const productData = {
-      "trackingCode": "AC123456",
-      "region": "ایران",
-      "linkType": "Facebook",
-      "cpCount": "6500",
-      "battlePass": "فعال - سیزن 12",
-      "sellDesc": "اکانت لول 150 با اسکین‌های کمیاب و گان‌های آپگرید شده به همراه کارکترهای ویژه",
-      "lease": "دارای گارانتی یکساله",
-      "sellPrice": "2,850,000",
-      "media": [
-        "sample1.jpg",
-        "sample2.jpg",
-        "sample3.jpg",
-        "sample4.jpg"
-      ]
-    };
+    // متغیرهای گلوبال
+    let currentSlide = 0;
+    let lightboxIndex = 0;
+    let timeoutId = null;
+    let productData = null;
 
     // تعریف آیکون‌های مختلف
     const icons = {
@@ -641,34 +628,60 @@
       user: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>'
     };
 
-    // اطلاعات محصول
-    const details = [
-      { icon: 'tag', title: 'کد آگهی‌ اکانت', value: productData.trackingCode },
-      { icon: 'globe', title: 'ریجن‌ اکانت', value: productData.region },
-      { icon: 'settings', title: 'لینک ‌اکانت', value: productData.linkType },
-      { icon: 'award', title: 'تعداد‌ سیپی', value: productData.cpCount },
-      { icon: 'fileCheck', title: 'وضعیت ‌بتل ‌پس', value: productData.battlePass },
-      { icon: 'shieldCheck', title: 'توضیحات ‌فروشنده', value: productData.sellDesc },
-      { icon: 'badgeCheck', title: 'تضمین ‌با‌ احراز ‌هویت', value: productData.lease },
-      { icon: 'banknote', title: 'قیمت ‌اکانت به تومان', value: productData.sellPrice, highlight: true },
-      { icon: 'user', title: 'مدیریت ‌واسطه', value: '@Ar_broken' },
-      { icon: 'user', title: 'ادمین ‌معاملات ‌سایت', value: '@Adm_Site' }
-    ];
+    // بارگذاری اطلاعات محصول از JSON
+    async function loadProductData() {
+      try {
+        const urlParams = new URLSearchParams(window.location.search);
+        const code = urlParams.get('code');
+        
+        if (!code) {
+          showNotFound();
+          return;
+        }
 
-    // متغیرهای گلوبال
-    let currentSlide = 0;
-    let lightboxIndex = 0;
-    let timeoutId = null;
+        const response = await fetch('/products.json');
+        const products = await response.json();
+        
+        if (products[code]) {
+          productData = products[code];
+          updatePageMeta();
+          renderImages();
+          renderDetails();
+          document.getElementById('loading').classList.add('hidden');
+          document.getElementById('content').classList.remove('hidden');
+        } else {
+          showNotFound();
+        }
+      } catch (error) {
+        console.error('خطا در بارگذاری اطلاعات:', error);
+        showNotFound();
+      }
+    }
+
+    // نمایش صفحه محصول یافت نشد
+    function showNotFound() {
+      document.getElementById('loading').classList.add('hidden');
+      document.getElementById('not-found').classList.remove('hidden');
+    }
+
+    // بروزرسانی متاتگ‌های صفحه
+    function updatePageMeta() {
+      if (!productData) return;
+      
+      document.title = `آرین استور - ${productData.trackingCode}`;
+      document.querySelector('meta[name="description"]').setAttribute('content', productData.sellDesc);
+      document.querySelector('meta[property="og:title"]').setAttribute('content', `آرین استور - ${productData.trackingCode}`);
+      document.querySelector('meta[property="og:description"]').setAttribute('content', productData.sellDesc);
+      
+      if (productData.media && productData.media.length > 0) {
+        document.querySelector('meta[property="og:image"]').setAttribute('content', `/public/image/${productData.media[0]}`);
+      }
+    }
 
     // نمایش لودینگ و بارگذاری اطلاعات
     document.addEventListener('DOMContentLoaded', function() {
-      setTimeout(() => {
-        document.getElementById('loading').classList.add('hidden');
-        document.getElementById('content').classList.remove('hidden');
-        renderImages();
-        renderDetails();
-        setupEventListeners();
-      }, 1000); // شبیه‌سازی لودینگ با یک ثانیه تأخیر
+      loadProductData();
+      setupEventListeners();
     });
 
     // نمایش تصاویر در کروسل
@@ -682,7 +695,7 @@
           item.className = 'carousel-item';
           
           const img = document.createElement('img');
-          img.src = `/image/${image}`;
+          img.src = `/public/image/${image}`;
           img.alt = `تصویر ${index + 1}`;
           img.className = 'carousel-image';
           
@@ -708,6 +721,21 @@
 
     // نمایش مشخصات محصول
     function renderDetails() {
+      if (!productData) return;
+      
+      const details = [
+        { icon: 'tag', title: 'کد آگهی‌ اکانت', value: productData.trackingCode },
+        { icon: 'globe', title: 'ریجن‌ اکانت', value: productData.region },
+        { icon: 'settings', title: 'لینک ‌اکانت', value: productData.linkType },
+        { icon: 'award', title: 'تعداد‌ سیپی', value: productData.cpCount },
+        { icon: 'fileCheck', title: 'وضعیت ‌بتل ‌پس', value: productData.battlePass },
+        { icon: 'shieldCheck', title: 'توضیحات ‌فروشنده', value: productData.sellDesc },
+        { icon: 'badgeCheck', title: 'تضمین ‌با‌ احراز ‌هویت', value: productData.lease },
+        { icon: 'banknote', title: 'قیمت ‌اکانت به تومان', value: productData.sellPrice, highlight: true },
+        { icon: 'user', title: 'مدیریت ‌واسطه', value: '@Ar_broken' },
+        { icon: 'user', title: 'ادمین ‌معاملات ‌سایت', value: '@Adm_Site' }
+      ];
+      
       const itemDetails = document.getElementById('item-details');
       itemDetails.innerHTML = '';
       
@@ -755,37 +783,34 @@
         if (e.key === 'Escape') {
           closeLightbox();
         } else if (e.key === 'ArrowRight') {
-          navigateLightbox('prev'); // معکوس به دلیل RTL
+          navigateLightbox('prev');
         } else if (e.key === 'ArrowLeft') {
-          navigateLightbox('next'); // معکوس به دلیل RTL
+          navigateLightbox('next');
         }
       });
     }
 
     // بروزرسانی کروسل
     function updateCarousel() {
-      if (!productData.media || productData.media.length === 0) return;
+      if (!productData || !productData.media || productData.media.length === 0) return;
       
       const carouselInner = document.getElementById('carousel-inner');
-      carouselInner.style.transform = `translateX(${currentSlide * 100}%)`;
+      carouselInner.style.transform = `translateX(-${currentSlide * 100}%)`;
     }
 
-    // اسلاید بعدی
+    // اسلاید بعدی (به سمت راست در RTL)
     function nextSlide() {
-      if (!productData.media || productData.media.length <= 1) return;
+      if (!productData || !productData.media || productData.media.length <= 1) return;
       
-      currentSlide = (currentSlide - 1) % productData.media.length;
-      if (currentSlide < 0) {
-        currentSlide = productData.media.length - 1;
-      }
+      currentSlide = (currentSlide + 1) % productData.media.length;
       updateCarousel();
     }
 
-    // اسلاید قبلی
+    // اسلاید قبلی (به سمت چپ در RTL)
     function prevSlide() {
-      if (!productData.media || productData.media.length <= 1) return;
+      if (!productData || !productData.media || productData.media.length <= 1) return;
       
-      currentSlide = (currentSlide + 1) % productData.media.length;
+      currentSlide = (currentSlide - 1 + productData.media.length) % productData.media.length;
       updateCarousel();
     }
 
@@ -796,7 +821,7 @@
       const lightboxCounter = document.getElementById('lightbox-counter');
       
       lightboxIndex = index;
-      lightboxImage.src = `/image/${productData.media[index]}`;
+      lightboxImage.src = `/public/image/${productData.media[index]}`;
       lightboxCounter.textContent = `${index + 1} / ${productData.media.length}`;
       lightbox.classList.add('active');
       document.body.style.overflow = 'hidden';
@@ -811,7 +836,7 @@
 
     // پیمایش در لایت‌باکس
     function navigateLightbox(direction) {
-      if (!productData.media || productData.media.length <= 1) return;
+      if (!productData || !productData.media || productData.media.length <= 1) return;
       
       if (direction === 'next') {
         lightboxIndex = (lightboxIndex + 1) % productData.media.length;
@@ -822,42 +847,19 @@
       const lightboxImage = document.getElementById('lightbox-image');
       const lightboxCounter = document.getElementById('lightbox-counter');
       
-      lightboxImage.src = `/image/${productData.media[lightboxIndex]}`;
+      lightboxImage.src = `/public/image/${productData.media[lightboxIndex]}`;
       lightboxCounter.textContent = `${lightboxIndex + 1} / ${productData.media.length}`;
     }
 
     // افزودن به سبد خرید
     function addToCart() {
+      if (!productData) return;
+      
       showToast({
         title: 'موفق ✓',
         message: 'محصول با موفقیت به سبد خرید اضافه شد',
         type: 'success'
       });
-      
-      // در حالت واقعی، اینجا درخواست به سرور ارسال می‌شود
-      // fetch(`addCart.php?code=${encodeURIComponent(productData.trackingCode)}&price=${encodeURIComponent(productData.sellPrice)}`)
-      //   .then(response => response.json())
-      //   .then(data => {
-      //     if (data.success) {
-      //       showToast({
-      //         title: 'موفق ✓',
-      //         message: 'محصول با موفقیت به سبد خرید اضافه شد',
-      //         type: 'success'
-      //       });
-      //     } else if (data.error === 'duplicate') {
-      //       showToast({
-      //         title: 'خطا',
-      //         message: 'این محصول قبلاً به سبد خرید اضافه شده است',
-      //         type: 'error'
-      //       });
-      //     } else {
-      //       showToast({
-      //         title: 'خطا',
-      //         message: 'مشکلی در افزودن محصول به سبد خرید رخ داد',
-      //         type: 'error'
-      //       });
-      //     }
-      //   });
     }
 
     // نمایش نوتیفیکیشن

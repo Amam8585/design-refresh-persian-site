@@ -1,0 +1,48 @@
+
+{
+  "AC123456": {
+    "trackingCode": "AC123456",
+    "region": "ایران",
+    "linkType": "Facebook",
+    "cpCount": "6500",
+    "battlePass": "فعال - سیزن 12",
+    "sellDesc": "اکانت لول 150 با اسکین‌های کمیاب و گان‌های آپگرید شده به همراه کارکترهای ویژه",
+    "lease": "دارای گارانتی یکساله",
+    "sellPrice": "2,850,000",
+    "media": [
+      "sample1.jpg",
+      "sample2.jpg",
+      "sample3.jpg",
+      "sample4.jpg"
+    ]
+  },
+  "AC789012": {
+    "trackingCode": "AC789012",
+    "region": "آمریکا",
+    "linkType": "Google",
+    "cpCount": "12000",
+    "battlePass": "فعال - سیزن 13",
+    "sellDesc": "اکانت لول 200 با تمام اسکین‌های لجندری و آپدیت‌های جدید",
+    "lease": "دارای گارانتی دو ساله",
+    "sellPrice": "4,200,000",
+    "media": [
+      "sample2.jpg",
+      "sample3.jpg",
+      "sample1.jpg"
+    ]
+  },
+  "AC345678": {
+    "trackingCode": "AC345678",
+    "region": "اروپا",
+    "linkType": "Apple ID",
+    "cpCount": "8500",
+    "battlePass": "غیرفعال",
+    "sellDesc": "اکانت لول 120 مناسب برای شروع بازی با محتویات پایه",
+    "lease": "دارای گارانتی شش ماهه",
+    "sellPrice": "1,950,000",
+    "media": [
+      "sample4.jpg",
+      "sample1.jpg"
+    ]
+  }
+}
