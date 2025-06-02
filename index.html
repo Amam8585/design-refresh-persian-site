@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
@@ -118,17 +117,24 @@
       margin: 0 auto;
       overflow: hidden;
       border-radius: 12px;
+      touch-action: pan-x;
     }
 
     .carousel-inner {
       display: flex;
       transition: transform 0.3s ease;
+      cursor: grab;
+    }
+
+    .carousel-inner:active {
+      cursor: grabbing;
     }
 
     .carousel-item {
       flex: 0 0 100%;
       display: flex;
       justify-content: center;
+      user-select: none;
     }
 
     .carousel-image {
@@ -136,6 +142,7 @@
       object-fit: cover;
       cursor: pointer;
       border-radius: 8px;
+      pointer-events: none;
     }
 
     @media (min-width: 768px) {
@@ -160,14 +167,26 @@
       justify-content: center;
       cursor: pointer;
       z-index: 1;
+      transition: background-color 0.2s, transform 0.1s;
+    }
+
+    .carousel-prev:hover,
+    .carousel-next:hover {
+      background-color: rgba(255, 255, 255, 0.3);
+    }
+
+    .carousel-prev:active,
+    .carousel-next:active {
+      transform: translateY(-50%) scale(0.95);
+      background-color: rgba(255, 255, 255, 0.4);
     }
 
     .carousel-prev {
-      left: 10px;
+      right: 10px;
     }
 
     .carousel-next {
-      right: 10px;
+      left: 10px;
     }
 
     /* کارت مشخصات */
@@ -503,7 +522,7 @@
     <div id="content" class="hidden">
       <!-- گالری -->
       <div class="gallery">
-        <div class="carousel">
+        <div class="carousel" id="carousel">
           <div class="carousel-inner" id="carousel-inner">
             <!-- تصاویر به صورت پویا اضافه می‌شوند -->
           </div>
@@ -574,7 +593,7 @@
       </a>
       <a href="https://arianstore.org/Por.html" class="nav-item">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="m2 7 4.41-4.41A2 2 0 0 1 7.83 2h8.34a2 2 0 0 1 1.42.59L22 7"/>
+          <path d="m2 7 4.41-4.41A2 2 0 0 1 7.83 2h8.34a2 2 0 0 0 1.42.59L22 7"/>
           <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>
           <path d="M15 22v-4a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v4"/>
           <path d="M2 7h20"/>
@@ -614,12 +633,18 @@
     let lightboxIndex = 0;
     let timeoutId = null;
     let productData = null;
+    let isSwipe = false;
+    let startX = 0;
+    let startY = 0;
+    let currentX = 0;
+    let currentY = 0;
+    let isDragging = false;
 
     // تعریف آیکون‌های مختلف
     const icons = {
       tag: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2H2v10l9.29 9.29c.94.94 2.48.94 3.42 0l6.58-6.58c.94-.94.94-2.48 0-3.42L12 2Z"/><path d="M7 7h.01"/></svg>',
       globe: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>',
-      settings: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>',
+      settings: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l-.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>',
       award: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/></svg>',
       fileCheck: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><path d="m9 15 2 2 4-4"/></svg>',
       shieldCheck: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-8 7.5S4 18 4 13V8c0-1 .4-2 1.2-2.5C9.5 2.5 11 2 12 2c1 0 2.5.5 6.8 3.5.8.5 1.2 1.5 1.2 2.5v5z"/><path d="m9 12 2 2 4-4"/></svg>',
@@ -682,6 +707,7 @@
     document.addEventListener('DOMContentLoaded', function() {
       loadProductData();
       setupEventListeners();
+      setupSwipeGestures();
     });
 
     // نمایش تصاویر در کروسل
@@ -760,8 +786,14 @@
     // تنظیم رویدادها
     function setupEventListeners() {
       // رویدادهای کروسل
-      document.getElementById('carousel-next').addEventListener('click', nextSlide);
-      document.getElementById('carousel-prev').addEventListener('click', prevSlide);
+      document.getElementById('carousel-next').addEventListener('click', (e) => {
+        e.preventDefault();
+        nextSlide();
+      });
+      document.getElementById('carousel-prev').addEventListener('click', (e) => {
+        e.preventDefault();
+        prevSlide();
+      });
       
       // رویدادهای لایت‌باکس
       document.getElementById('lightbox-close').addEventListener('click', closeLightbox);
@@ -788,6 +820,95 @@
           navigateLightbox('next');
         }
       });
+    }
+
+    // تنظیم حرکات لمسی
+    function setupSwipeGestures() {
+      const carousel = document.getElementById('carousel');
+      const carouselInner = document.getElementById('carousel-inner');
+      
+      // رویدادهای ماوس
+      carousel.addEventListener('mousedown', handleStart);
+      carousel.addEventListener('mousemove', handleMove);
+      carousel.addEventListener('mouseup', handleEnd);
+      carousel.addEventListener('mouseleave', handleEnd);
+      
+      // رویدادهای لمسی
+      carousel.addEventListener('touchstart', handleStart, { passive: true });
+      carousel.addEventListener('touchmove', handleMove, { passive: false });
+      carousel.addEventListener('touchend', handleEnd);
+      
+      function handleStart(e) {
+        if (!productData || !productData.media || productData.media.length <= 1) return;
+        
+        isDragging = true;
+        isSwipe = false;
+        
+        const clientX = e.type === 'mousedown' ? e.clientX : e.touches[0].clientX;
+        const clientY = e.type === 'mousedown' ? e.clientY : e.touches[0].clientY;
+        
+        startX = clientX;
+        startY = clientY;
+        currentX = clientX;
+        currentY = clientY;
+        
+        carouselInner.style.transition = 'none';
+      }
+      
+      function handleMove(e) {
+        if (!isDragging || !productData || !productData.media || productData.media.length <= 1) return;
+        
+        e.preventDefault();
+        
+        const clientX = e.type === 'mousemove' ? e.clientX : e.touches[0].clientX;
+        const clientY = e.type === 'mousemove' ? e.clientY : e.touches[0].clientY;
+        
+        const deltaX = clientX - startX;
+        const deltaY = clientY - startY;
+        
+        // تشخیص حرکت افقی
+        if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 10) {
+          isSwipe = true;
+          currentX = clientX;
+          
+          // محاسبه درصد حرکت
+          const carousel = document.getElementById('carousel');
+          const movePercent = (deltaX / carousel.offsetWidth) * 100;
+          const baseTransform = -currentSlide * 100;
+          
+          carouselInner.style.transform = `translateX(${baseTransform + movePercent}%)`;
+        }
+      }
+      
+      function handleEnd(e) {
+        if (!isDragging || !productData || !productData.media || productData.media.length <= 1) return;
+        
+        isDragging = false;
+        carouselInner.style.transition = 'transform 0.3s ease';
+        
+        if (isSwipe) {
+          const deltaX = currentX - startX;
+          const threshold = 50; // حداقل مسافت برای تغییر اسلاید
+          
+          if (deltaX > threshold) {
+            // سوایپ به راست (اسلاید قبلی)
+            prevSlide();
+          } else if (deltaX < -threshold) {
+            // سوایپ به چپ (اسلاید بعدی)
+            nextSlide();
+          } else {
+            // بازگشت به اسلاید فعلی
+            updateCarousel();
+          }
+        }
+        
+        // بازنشانی متغیرها
+        isSwipe = false;
+        startX = 0;
+        startY = 0;
+        currentX = 0;
+        currentY = 0;
+      }
     }
 
     // بروزرسانی کروسل
