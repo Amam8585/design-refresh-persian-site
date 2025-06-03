@@ -38,9 +38,15 @@
     }
 
     .container {
-      max-width: 1200px;
+      max-width: 1400px;
       margin: 0 auto;
       padding: 0 16px;
+    }
+
+    @media (min-width: 1024px) {
+      .container {
+        padding: 0 32px;
+      }
     }
 
     /* هدر */
@@ -55,6 +61,12 @@
       border-bottom: 1px solid var(--border);
       z-index: 50;
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    @media (min-width: 1024px) {
+      .header {
+        height: 80px;
+      }
     }
 
     .header-container {
@@ -76,9 +88,22 @@
       border-radius: 50%;
     }
 
+    @media (min-width: 1024px) {
+      .logo {
+        width: 48px;
+        height: 48px;
+      }
+    }
+
     .brand-name {
       font-weight: bold;
       font-size: 18px;
+    }
+
+    @media (min-width: 1024px) {
+      .brand-name {
+        font-size: 22px;
+      }
     }
 
     .home-button {
@@ -95,6 +120,14 @@
       font-size: 14px;
     }
 
+    @media (min-width: 1024px) {
+      .home-button {
+        padding: 12px 24px;
+        font-size: 16px;
+        border-radius: 10px;
+      }
+    }
+
     .home-button:hover {
       opacity: 0.9;
     }
@@ -105,10 +138,35 @@
       padding-bottom: 128px;
     }
 
+    @media (min-width: 1024px) {
+      .main {
+        padding-top: 120px;
+        padding-bottom: 80px;
+        display: grid;
+        grid-template-columns: 1fr 400px;
+        gap: 48px;
+        align-items: start;
+      }
+    }
+
+    @media (min-width: 1280px) {
+      .main {
+        grid-template-columns: 1fr 480px;
+        gap: 64px;
+      }
+    }
+
     /* گالری */
     .gallery {
       margin: 32px 0;
       position: relative;
+    }
+
+    @media (min-width: 1024px) {
+      .gallery {
+        margin: 0;
+        grid-column: 1;
+      }
     }
 
     .carousel {
@@ -118,6 +176,13 @@
       overflow: hidden;
       border-radius: 12px;
       touch-action: pan-x;
+    }
+
+    @media (min-width: 1024px) {
+      .carousel {
+        max-width: 100%;
+        border-radius: 16px;
+      }
     }
 
     .carousel-inner {
@@ -151,6 +216,19 @@
       }
     }
 
+    @media (min-width: 1024px) {
+      .carousel-image {
+        height: 500px;
+        border-radius: 12px;
+      }
+    }
+
+    @media (min-width: 1280px) {
+      .carousel-image {
+        height: 600px;
+      }
+    }
+
     .carousel-prev,
     .carousel-next {
       position: absolute;
@@ -167,7 +245,21 @@
       justify-content: center;
       cursor: pointer;
       z-index: 1;
-      transition: background-color 0.2s, transform 0.1s;
+      transition: background-color 0.2s;
+    }
+
+    @media (min-width: 1024px) {
+      .carousel-prev,
+      .carousel-next {
+        width: 56px;
+        height: 56px;
+      }
+      
+      .carousel-prev svg,
+      .carousel-next svg {
+        width: 28px;
+        height: 28px;
+      }
     }
 
     .carousel-prev:hover,
@@ -176,9 +268,12 @@
     }
 
     .carousel-prev:active,
-    .carousel-next:active {
-      transform: translateY(-50%) scale(0.95);
-      background-color: rgba(255, 255, 255, 0.4);
+    .carousel-next:active,
+    .carousel-prev:focus,
+    .carousel-next:focus {
+      background-color: rgba(255, 255, 255, 0.2);
+      color: white;
+      outline: none;
     }
 
     .carousel-prev {
@@ -187,6 +282,16 @@
 
     .carousel-next {
       left: 10px;
+    }
+
+    @media (min-width: 1024px) {
+      .carousel-prev {
+        right: 16px;
+      }
+
+      .carousel-next {
+        left: 16px;
+      }
     }
 
     /* کارت مشخصات */
@@ -200,10 +305,26 @@
       box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
     }
 
+    @media (min-width: 1024px) {
+      .card {
+        margin: 0;
+        grid-column: 2;
+        border-radius: 16px;
+        position: sticky;
+        top: 140px;
+      }
+    }
+
     .card-header {
       padding: 20px;
       border-bottom: 1px solid var(--border);
       text-align: center;
+    }
+
+    @media (min-width: 1024px) {
+      .card-header {
+        padding: 24px;
+      }
     }
 
     .card-title {
@@ -214,6 +335,12 @@
     @media (min-width: 768px) {
       .card-title {
         font-size: 24px;
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .card-title {
+        font-size: 26px;
       }
     }
 
@@ -230,6 +357,14 @@
       }
     }
 
+    @media (min-width: 1024px) {
+      .card-content {
+        grid-template-columns: 1fr;
+        padding: 32px;
+        gap: 20px;
+      }
+    }
+
     .detail-item {
       display: flex;
       align-items: flex-start;
@@ -237,6 +372,14 @@
       padding: 12px;
       border: 1px solid var(--border);
       border-radius: 8px;
+    }
+
+    @media (min-width: 1024px) {
+      .detail-item {
+        padding: 16px;
+        border-radius: 12px;
+        gap: 16px;
+      }
     }
 
     .detail-item.highlight {
@@ -249,14 +392,34 @@
       margin-top: 4px;
     }
 
+    @media (min-width: 1024px) {
+      .detail-icon svg {
+        width: 22px;
+        height: 22px;
+      }
+    }
+
     .detail-content h3 {
       font-weight: bold;
       margin-bottom: 4px;
     }
 
+    @media (min-width: 1024px) {
+      .detail-content h3 {
+        font-size: 16px;
+        margin-bottom: 6px;
+      }
+    }
+
     .detail-content p {
       font-size: 14px;
       color: var(--muted-foreground);
+    }
+
+    @media (min-width: 1024px) {
+      .detail-content p {
+        font-size: 15px;
+      }
     }
 
     .detail-item.highlight p {
@@ -268,6 +431,12 @@
       padding: 24px 32px;
       display: flex;
       justify-content: center;
+    }
+
+    @media (min-width: 1024px) {
+      .card-footer {
+        padding: 32px;
+      }
     }
 
     .add-to-cart {
@@ -285,6 +454,15 @@
       font-family: 'Vazirmatn', system-ui, sans-serif;
     }
 
+    @media (min-width: 1024px) {
+      .add-to-cart {
+        max-width: none;
+        padding: 20px;
+        font-size: 20px;
+        border-radius: 12px;
+      }
+    }
+
     .add-to-cart:hover {
       opacity: 0.9;
     }
@@ -299,6 +477,12 @@
       backdrop-filter: blur(8px);
       border-top: 1px solid var(--border);
       z-index: 40;
+    }
+
+    @media (min-width: 1024px) {
+      .bottom-nav {
+        display: none;
+      }
     }
 
     .bottom-nav-container {
